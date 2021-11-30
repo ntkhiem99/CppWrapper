@@ -1,4 +1,5 @@
 /.vs/
 /CppNative/Release/
 /CppWrapper/Release/
+/CppWrapper/x64/
 /Release/

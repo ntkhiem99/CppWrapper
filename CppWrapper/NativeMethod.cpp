@@ -8,7 +8,7 @@
 namespace WinApi {
 	bool NativeMethod::_ShellExecuteEx(Struct::SHELLEXECUTEINFO^% pExecInfo) {
 		SHELLEXECUTEINFOW shellExecuteInfo = SHELLEXECUTEINFOW();
-		shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
 		shellExecuteInfo.fMask = pExecInfo->fMask;
 		shellExecuteInfo.hwnd = (HWND)pExecInfo->hwnd.ToPointer();
 		shellExecuteInfo.lpVerb = StringToPointer(pExecInfo->lpVerb);
