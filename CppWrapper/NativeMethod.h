@@ -25,7 +25,7 @@ namespace WinApi {
 		static bool _UnhookWindowsHookEx(IntPtr hhk);
 		static LRESULT _CallNextHookEx(IntPtr hhk, int nCode, WPARAM wParam, LPARAM lParam);
 		static bool _PostMessage(IntPtr hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-		static LONG _GetWindowLong(IntPtr hWnd, int nIndex);
+		static LONG_PTR _GetWindowLong(IntPtr hWnd, int nIndex);
 		static int _GetDlgCtrlID(IntPtr hWnd);
 		static int _GetWindowText(IntPtr hWnd, [Out] String^% lpString, int nMaxCount);
 		static int _GetWindowTextLength(IntPtr hWnd);

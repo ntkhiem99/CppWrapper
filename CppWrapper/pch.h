@@ -1,7 +1,7 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <windows.h>
+#include <Windows.h>
 #include <vcclr.h>
 #include <Commctrl.h>
 #include <iostream>

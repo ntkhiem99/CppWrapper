@@ -200,7 +200,7 @@ namespace WinApi {
 		return PostMessage(reinterpret_cast<HWND>(hWnd.ToPointer()), Msg, wParam, lParam);
 	}
 
-	LONG NativeMethod::_GetWindowLong(IntPtr hWnd, int nIndex) {
+	LONG_PTR NativeMethod::_GetWindowLong(IntPtr hWnd, int nIndex) {
 		return IntPtr::Size == 8
 			? GetWindowLongPtr(reinterpret_cast<HWND>(hWnd.ToPointer()), nIndex)
 			: GetWindowLong(reinterpret_cast<HWND>(hWnd.ToPointer()), nIndex);

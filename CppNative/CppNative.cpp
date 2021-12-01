@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "CppNative.h"
 
-DWORD WINAPI CppNative::ThreadProc(LPVOID lpParameter) {
+LRESULT WINAPI CppNative::ThreadProc(LPVOID lpParameter) {
 	DATA<NMHDR>* data = reinterpret_cast<DATA<NMHDR>*>(lpParameter);
 	return data->fnSendMessage(data->hWnd, data->Msg, data->wParam, reinterpret_cast<LPARAM>(data->lParam));
 }

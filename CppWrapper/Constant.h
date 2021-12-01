@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include <WinUser.h>
 
 namespace WinApi {
 	public struct Constant abstract sealed {
@@ -28,13 +29,22 @@ namespace WinApi {
 			literal int LARGE_PAGES = MEM_LARGE_PAGES;
 		};
 		ref struct GWL abstract sealed {
+#ifdef _WIN64
+			literal int WNDPROC = GWLP_WNDPROC;
+			literal int HINSTANCE = GWLP_HINSTANCE;
+			literal int HWNDPARENT = GWLP_HWNDPARENT;
+			literal int USERDATA = GWLP_USERDATA;
+#else
 			literal int WNDPROC = GWL_WNDPROC;
 			literal int HINSTANCE = GWL_HINSTANCE;
 			literal int HWNDPARENT = GWL_HWNDPARENT;
+			literal int USERDATA = GWL_USERDATA;
+#endif
+			
+
 			literal int ID = GWL_ID;
 			literal int STYLE = GWL_STYLE;
 			literal int EXSTYLE = GWL_EXSTYLE;
-			literal int USERDATA = GWL_USERDATA;
 		};
 		ref struct WM abstract sealed {
 			literal int COMMAND = WM_COMMAND;

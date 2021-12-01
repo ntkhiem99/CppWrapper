@@ -14,7 +14,7 @@ private:
 		LPFN_SENDMESSAGE fnSendMessage;
 	};
 
-	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
+	static LRESULT WINAPI ThreadProc(LPVOID lpParameter);
 	static void AfterThreadFunc();
 
 	static void clean(HANDLE hProcess, HANDLE functionAddress, HANDLE dataAddress, HANDLE thread);
