@@ -10,16 +10,16 @@ namespace WinApi {
 		SHELLEXECUTEINFOW shellExecuteInfo = SHELLEXECUTEINFOW();
 		shellExecuteInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
 		shellExecuteInfo.fMask = pExecInfo->fMask;
-		shellExecuteInfo.hwnd = (HWND)pExecInfo->hwnd.ToPointer();
+		shellExecuteInfo.hwnd = reinterpret_cast<HWND>(pExecInfo->hwnd.ToPointer());
 		shellExecuteInfo.lpVerb = StringToPointer(pExecInfo->lpVerb);
 		shellExecuteInfo.lpFile = StringToPointer(pExecInfo->lpFile);
 		shellExecuteInfo.lpParameters = StringToPointer(pExecInfo->lpParameters);
 		shellExecuteInfo.lpDirectory = StringToPointer(pExecInfo->lpDirectory);
 		shellExecuteInfo.nShow = pExecInfo->nShow;
-		shellExecuteInfo.hInstApp = (HINSTANCE)pExecInfo->hInstApp.ToPointer();
+		shellExecuteInfo.hInstApp = reinterpret_cast<HINSTANCE>(pExecInfo->hInstApp.ToPointer());
 		shellExecuteInfo.lpIDList = pExecInfo->lpIDList.ToPointer();
 		shellExecuteInfo.lpClass = StringToPointer(pExecInfo->lpClass);
-		shellExecuteInfo.hkeyClass = (HKEY)pExecInfo->hkeyClass.ToPointer();
+		shellExecuteInfo.hkeyClass = reinterpret_cast<HKEY>(pExecInfo->hkeyClass.ToPointer());
 		shellExecuteInfo.dwHotKey = pExecInfo->dwHotKey;
 		shellExecuteInfo.hIcon = pExecInfo->hIcon.ToPointer();
 		shellExecuteInfo.hMonitor = pExecInfo->hMonitor.ToPointer();
@@ -49,11 +49,11 @@ namespace WinApi {
 		wstring ws(p_str);
 		string s(ws.begin(), ws.end());
 
-		return IntPtr(GetProcAddress((HMODULE)hModule.ToPointer(), s.data()));
+		return IntPtr(GetProcAddress(reinterpret_cast<HMODULE>(hModule.ToPointer()), s.data()));
 	}
 
 	bool NativeMethod::_FreeLibrary(IntPtr hModule) {
-		return FreeLibrary((HMODULE)hModule.ToPointer());
+		return FreeLibrary(reinterpret_cast<HMODULE>(hModule.ToPointer()));
 	}
 
 	DWORD NativeMethod::_GetCurrentThreadId() {
@@ -73,17 +73,17 @@ namespace WinApi {
 	}
 
 	int NativeMethod::_GetClassName(IntPtr hWnd, String^% lpClassName) {
-		TCHAR ptr[256];
+		TCHAR buffer[256];
 
-		int result = GetClassName((HWND)hWnd.ToPointer(), ptr, 256);
+		int result = GetClassName(reinterpret_cast<HWND>(hWnd.ToPointer()), buffer, 256);
 
-		lpClassName = gcnew String(ptr);
+		lpClassName = gcnew String(buffer);
 
 		return result;
 	}
 
 	IntPtr NativeMethod::_GetParent(IntPtr hWnd) {
-		return IntPtr(GetParent((HWND)hWnd.ToPointer()));
+		return IntPtr(GetParent(reinterpret_cast<HWND>(hWnd.ToPointer())));
 	}
 
 	bool NativeMethod::_TranslateMessage(Struct::MSG^% lpMsg) {
@@ -93,7 +93,7 @@ namespace WinApi {
 
 		MSG msg = MSG();
 		msg.pt = point;
-		msg.hwnd = (HWND)lpMsg->hwnd.ToPointer();
+		msg.hwnd = reinterpret_cast<HWND>(lpMsg->hwnd.ToPointer());
 		msg.message = lpMsg->message;
 		msg.time = lpMsg->time;
 		msg.lParam = lpMsg->lParam;
@@ -120,7 +120,7 @@ namespace WinApi {
 
 		MSG msg = MSG();
 		msg.pt = point;
-		msg.hwnd = (HWND)lpMsg->hwnd.ToPointer();
+		msg.hwnd = reinterpret_cast<HWND>(lpMsg->hwnd.ToPointer());
 		msg.message = lpMsg->message;
 		msg.time = lpMsg->time;
 		msg.lParam = lpMsg->lParam;
@@ -147,13 +147,13 @@ namespace WinApi {
 
 		MSG msg = MSG();
 		msg.pt = point;
-		msg.hwnd = (HWND)lpMsg->hwnd.ToPointer();
+		msg.hwnd = reinterpret_cast<HWND>(lpMsg->hwnd.ToPointer());
 		msg.message = lpMsg->message;
 		msg.time = lpMsg->time;
 		msg.lParam = lpMsg->lParam;
 		msg.wParam = lpMsg->wParam;
 
-		bool result = GetMessage(&msg, (HWND)hWnd.ToPointer(), wMsgFilterMin, wMsgFilterMax);
+		bool result = GetMessage(&msg, reinterpret_cast<HWND>(hWnd.ToPointer()), wMsgFilterMin, wMsgFilterMax);
 
 		lpMsg->pt.x = point.x;
 		lpMsg->pt.y = point.y;
@@ -168,65 +168,66 @@ namespace WinApi {
 	}
 
 	DWORD NativeMethod::_MsgWaitForMultipleObjects(DWORD nCount, cli::array<IntPtr>^ pHandles, bool fWaitAll, DWORD dwMilliseconds, DWORD dwWakeMask) {
-		HANDLE* realArray = new HANDLE[pHandles->Length];
+		HANDLE* buffer = new HANDLE[pHandles->Length];
+
 		for (int i = 0; i < pHandles->Length; i++)
-			realArray[i] = pHandles[i].ToPointer();
+			buffer[i] = pHandles[i].ToPointer();
 
-		DWORD result = MsgWaitForMultipleObjects(nCount, realArray, fWaitAll, dwMilliseconds, dwWakeMask);
+		DWORD result = MsgWaitForMultipleObjects(nCount, buffer, fWaitAll, dwMilliseconds, dwWakeMask);
 
-		delete[] realArray;
+		delete[] buffer;
 
 		return result;
 	}
 
 	IntPtr NativeMethod::_FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, String^ lpszClass, String^ lpszWindow) {
-		return IntPtr(FindWindowExW((HWND)hWndParent.ToPointer(), (HWND)hWndChildAfter.ToPointer(), StringToPointer(lpszClass), StringToPointer(lpszWindow)));
+		return IntPtr(FindWindowExW(reinterpret_cast<HWND>(hWndParent.ToPointer()), reinterpret_cast<HWND>(hWndChildAfter.ToPointer()), StringToPointer(lpszClass), StringToPointer(lpszWindow)));
 	}
 
 	bool NativeMethod::_ShowWindow(IntPtr hWnd, int nCmdShow) {
-		return ShowWindow((HWND)hWnd.ToPointer(), nCmdShow);
+		return ShowWindow(reinterpret_cast<HWND>(hWnd.ToPointer()), nCmdShow);
 	}
 
 	bool NativeMethod::_UnhookWindowsHookEx(IntPtr hhk) {
-		return UnhookWindowsHookEx((HHOOK)hhk.ToPointer());
+		return UnhookWindowsHookEx(reinterpret_cast<HHOOK>(hhk.ToPointer()));
 	}
 
 	LRESULT NativeMethod::_CallNextHookEx(IntPtr hhk, int nCode, WPARAM wParam, LPARAM lParam) {
-		return CallNextHookEx((HHOOK)hhk.ToPointer(), nCode, wParam, lParam);
+		return CallNextHookEx(reinterpret_cast<HHOOK>(hhk.ToPointer()), nCode, wParam, lParam);
 	}
 
 	bool NativeMethod::_PostMessage(IntPtr hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-		return PostMessage((HWND)hWnd.ToPointer(), Msg, wParam, lParam);
+		return PostMessage(reinterpret_cast<HWND>(hWnd.ToPointer()), Msg, wParam, lParam);
 	}
 
 	LONG NativeMethod::_GetWindowLong(IntPtr hWnd, int nIndex) {
 		return IntPtr::Size == 8
-			? GetWindowLongPtr((HWND)hWnd.ToPointer(), nIndex)
-			: GetWindowLong((HWND)hWnd.ToPointer(), nIndex);
+			? GetWindowLongPtr(reinterpret_cast<HWND>(hWnd.ToPointer()), nIndex)
+			: GetWindowLong(reinterpret_cast<HWND>(hWnd.ToPointer()), nIndex);
 	}
 
 	int NativeMethod::_GetDlgCtrlID(IntPtr hWnd) {
-		return GetDlgCtrlID((HWND)hWnd.ToPointer());
+		return GetDlgCtrlID(reinterpret_cast<HWND>(hWnd.ToPointer()));
 	}
 
 	int NativeMethod::_GetWindowText(IntPtr hWnd, String^% lpString, int nMaxCount) {
-		TCHAR* str_ptr = new TCHAR[nMaxCount];
+		LPTSTR buffer = new TCHAR[nMaxCount];
 
-		int result = GetWindowText((HWND)hWnd.ToPointer(), str_ptr, nMaxCount);
+		int result = GetWindowText(reinterpret_cast<HWND>(hWnd.ToPointer()), buffer, nMaxCount);
 
-		lpString = gcnew String(str_ptr);
+		lpString = gcnew String(buffer);
 
-		delete[] str_ptr;
+		delete[] buffer;
 
 		return result;
 	}
 
 	int NativeMethod::_GetWindowTextLength(IntPtr hWnd) {
-		return GetWindowTextLength((HWND)hWnd.ToPointer());
+		return GetWindowTextLength(reinterpret_cast<HWND>(hWnd.ToPointer()));
 	}
 
 	LRESULT NativeMethod::_SendMessage(IntPtr hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
-		return SendMessage((HWND)hWnd.ToPointer(), Msg, wParam, lParam);
+		return SendMessage(reinterpret_cast<HWND>(hWnd.ToPointer()), Msg, wParam, lParam);
 	}
 
 	int NativeMethod::_system(String^ str) {

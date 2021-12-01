@@ -17,11 +17,11 @@ private:
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
 	static void AfterThreadFunc();
 
-	static void error(LPCSTR txt);
-
 	static void clean(HANDLE hProcess, HANDLE functionAddress, HANDLE dataAddress, HANDLE thread);
 
 public:
+	static void error(LPCSTR txt);
+
 	template<typename T>
 	static bool SendMessageRemote(HWND hWnd, UINT Msg, WPARAM wParam, T* lParam) {
 		HANDLE hProcess = nullptr;
